@@ -19,7 +19,9 @@
 
 ## What It Is
 
-Capybara is a **single-node, crash-safe, networked OLTP database** built entirely in [Zeta](https://github.com/murphsicles/Zeta). It implements:
+Capybara is a **single-node, crash-safe, networked OLTP database** built entirely in [Zeta](https://github.com/murphsicles/Zeta). 
+
+It implements:
 
 - **Double-entry accounting** with two-phase commit (pending → post / void)
 - **128-bit account IDs** with O(1) hash-indexed lookups
