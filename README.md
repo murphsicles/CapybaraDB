@@ -1,7 +1,7 @@
 # Capybara DB
 
 <p align="center">
-  <img src="assets/capy128.png" alt="Capybara DB" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/murphsicles/CapybaraDB/main/assets/capy128.png" alt="Capybara DB" width="128" height="128">
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/language-Zeta-purple" alt="Language: Zeta">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT">
-  <img src="assets/capy72.png" width="16" height="16" style="vertical-align: middle">
+  <img src="https://raw.githubusercontent.com/murphsicles/CapybaraDB/main/assets/capy72.png" width="16" height="16" style="vertical-align: middle">
 </p>
 
 ---
@@ -311,7 +311,7 @@ MIT
 ---
 
 <p align="center">
-  <img src="assets/capy72.png" width="32" height="32">
+  <img src="https://raw.githubusercontent.com/murphsicles/CapybaraDB/main/assets/capy72.png" width="32" height="32">
   <br>
   <em>Built with Zeta · Chasing the singularity</em>
 </p>
