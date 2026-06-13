@@ -19,7 +19,7 @@
 
 ## What It Is
 
-Capybara is a **single-node, crash-safe, networked OLTP database** built entirely in [Zeta](https://github.com/murphsicles/PrimeZeta) — a bootstrapped systems language. It implements:
+Capybara is a **single-node, crash-safe, networked OLTP database** built entirely in [Zeta](https://github.com/murphsicles/Zeta). It implements:
 
 - **Double-entry accounting** with two-phase commit (pending → post / void)
 - **128-bit account IDs** with O(1) hash-indexed lookups
@@ -86,7 +86,7 @@ On startup:
 
 ### Prerequisites
 
-- [Zeta compiler](https://github.com/murphsicles/PrimeZeta) v0.9.18+
+- [Zeta compiler](https://github.com/murphsicles/PrimeZeta) v1.0.18+
 - Linux kernel 6.6+ (for io_uring)
 - GCC (for linking runtime)
 
