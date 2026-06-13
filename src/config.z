@@ -1,0 +1,146 @@
+// Capybara DB — Configuration Parsing
+//
+// Parses CLI arguments and config files to produce a Config struct.
+
+use std::env;
+use std::io::{self, Write};
+use std::fs;
+use std::path::Path;
+
+// ─── Constants ──────────────────────────────────────────────────────────────
+
+const DEFAULT_DATA_DIR: &str = "/var/lib/capybara";
+const DEFAULT_PORT: i64 = 8700;
+const DEFAULT_CLUSTER_SIZE: i64 = 1;
+
+// ─── Config Struct ──────────────────────────────────────────────────────────
+
+pub struct Config {
+    pub data_dir: &str,
+    pub replica_id: i64,
+    pub cluster_size: i64,
+    pub port: i64,
+    pub no_create_dir: bool,
+}
+
+// ─── Parse CLI Arguments ────────────────────────────────────────────────────
+
+pub fn parse_args() -> Result<Config, &str> {
+    let args: Vec<String> = env::args();
+    let len: i64 = args.len();
+
+    if (len < 2) {
+        return Err("Usage: capybara --replica <id> [options]");
+    }
+
+    let mut data_dir: &str = DEFAULT_DATA_DIR;
+    let mut replica_id: i64 = 0;
+    let mut cluster_size: i64 = DEFAULT_CLUSTER_SIZE;
+    let mut port: i64 = DEFAULT_PORT;
+    let mut no_create_dir: bool = false;
+    let mut i: i64 = 1;
+
+    while (i < len) {
+        let arg = args.get(i);
+        if (arg == "--replica" || arg == "-r") {
+            i = i + 1;
+            replica_id = match parse_i64(args.get(i)) {
+                Ok(n) => n,
+                Err(_) => return Err("Invalid replica ID"),
+            };
+        } else if (arg == "--data-dir" || arg == "-d") {
+            i = i + 1;
+            data_dir = args.get(i);
+        } else if (arg == "--cluster-size" || arg == "-n") {
+            i = i + 1;
+            cluster_size = match parse_i64(args.get(i)) {
+                Ok(n) => n,
+                Err(_) => return Err("Invalid cluster size"),
+            };
+        } else if (arg == "--port" || arg == "-p") {
+            i = i + 1;
+            port = match parse_i64(args.get(i)) {
+                Ok(n) => n,
+                Err(_) => return Err("Invalid port"),
+            };
+        } else if (arg == "--no-create-dir") {
+            no_create_dir = true;
+        } else if (arg == "--help" || arg == "-h") {
+            print_usage();
+            std::process::exit(0);
+        } else {
+            print("capybara: unknown option: ");
+            print(arg);
+            print("\n");
+            return Err("Unknown option");
+        }
+        i = i + 1;
+    }
+
+    if (replica_id < 0 || replica_id >= cluster_size) {
+        return Err("replica_id must be in [0, cluster_size)");
+    }
+
+    return Ok(Config {
+        data_dir: data_dir,
+        replica_id: replica_id,
+        cluster_size: cluster_size,
+        port: port,
+        no_create_dir: no_create_dir,
+    });
+}
+
+// ─── Parse i64 from string ──────────────────────────────────────────────────
+
+fn parse_i64(s: &str) -> Result<i64, &str> {
+    let mut val: i64 = 0;
+    let mut neg: bool = false;
+    let mut started: bool = false;
+    let bytes = s.as_bytes();
+    let len = bytes.len();
+    let mut i: i64 = 0;
+
+    while (i < len) {
+        let c = bytes.get(i);
+        if (c == '-' && !started) {
+            neg = true;
+        } else if (c >= '0' && c <= '9') {
+            started = true;
+            val = val * 10 + (c - '0') as i64;
+        } else if (c == ' ' && !started) {
+            // skip leading whitespace
+        } else {
+            return Err("Not a number");
+        }
+        i = i + 1;
+    }
+
+    if (!started) {
+        return Err("Empty number");
+    }
+
+    if (neg) {
+        val = -val;
+    }
+
+    return Ok(val);
+}
+
+// ─── Print Usage ────────────────────────────────────────────────────────────
+
+fn print_usage() {
+    print("Capybara DB v0.1.0\n");
+    print("Usage: capybara --replica <id> [options]\n");
+    print("\n");
+    print("Options:\n");
+    print("  --replica <id>         Replica ID (required, 0–62)\n");
+    print("  --data-dir <path>      Data directory (default: ");
+    print(DEFAULT_DATA_DIR);
+    print(")\n");
+    print("  --cluster-size <n>     Cluster size (default: 1)\n");
+    print("  --port <p>             TCP port (default: ");
+    print(DEFAULT_PORT);
+    print(")\n");
+    print("  --no-create-dir        Don't auto-create data directory\n");
+    print("  --help, -h             Show this help\n");
+}

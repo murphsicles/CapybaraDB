@@ -1,0 +1,7 @@
+build.z
+build_lsm_test.z
+build_sim.z
+/tmp/
+*.o
+*.out
+.DS_Store
